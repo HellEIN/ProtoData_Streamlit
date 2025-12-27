@@ -46,36 +46,42 @@ if 'model_trained_successfully' not in st.session_state:
 # File uploader
 st.info("Please upload your dataset.")
 with st.expander("Data Upload"):
-    uploaded_file = st.file_uploader("Choose a file", type=["csv", "xlsx", "parquet", "feather"])
+    uploaded_file = st.file_uploader(
+        "Choose a file",
+        type=["csv", "xlsx", "parquet", "feather"]
+    )
+
     if uploaded_file is not None:
         try:
-            # Get file extension as fallback
-            file_extension = uploaded_file.name.split('.')[-1].lower()
-            
-            # Determine file type by MIME type first, then fallback to extension
-            if uploaded_file.type == "text/csv" or file_extension == "csv":
+            file_extension = uploaded_file.name.split(".")[-1].lower()
+
+            if file_extension == "csv":
                 df = pd.read_csv(uploaded_file)
-            elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" or file_extension == "xlsx":
-                df = pd.read_excel(uploaded_file)
-            elif uploaded_file.type == "application/x-parquet" or file_extension == "parquet":
+
+            elif file_extension == "xlsx":
+                df = pd.read_excel(uploaded_file, engine="openpyxl")
+
+            elif file_extension == "parquet":
                 df = pd.read_parquet(uploaded_file)
-            elif uploaded_file.type == "application/octet-stream" or file_extension == "feather":
+
+            elif file_extension == "feather":
                 df = pd.read_feather(uploaded_file)
+
             else:
-                st.error(f"Unsupported file type: {uploaded_file.type}")
-                df = None # Ensure df is None on error
+                st.error("Unsupported file format")
+                df = None
+
         except Exception as e:
-            st.error(f"Error reading file: {str(e)}")
-            st.warning("Please ensure you're uploading a valid file in the supported format.")
-            df = None # Ensure df is None on error
+            st.error(f"Error reading file: {e}")
+            df = None
 
         if df is not None:
             st.dataframe(df)
-            # Store original dataframe in session state
             st.session_state.df_original = df.copy()
             st.session_state.trained_model = None
             st.session_state.model_trained_successfully = False
             st.session_state.prediction_result = None
+
 
 
 # Data summary
@@ -772,6 +778,7 @@ with st.expander("Machine Learning Models", expanded=st.session_state.model_trai
         
     else:
             st.warning("⚠️ Please upload a dataset first to train models.")
+
 
 
 

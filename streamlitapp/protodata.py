@@ -59,7 +59,7 @@ with st.expander("Data Upload"):
                 df = pd.read_csv(uploaded_file)
 
             elif file_extension == "xlsx":
-                df = pd.read_excel(uploaded_file, engine="openpyxl")
+                df = pd.read_excel(uploaded_file)
 
             elif file_extension == "parquet":
                 df = pd.read_parquet(uploaded_file)
@@ -778,6 +778,7 @@ with st.expander("Machine Learning Models", expanded=st.session_state.model_trai
         
     else:
             st.warning("⚠️ Please upload a dataset first to train models.")
+
 
 
 

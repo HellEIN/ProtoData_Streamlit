@@ -56,7 +56,7 @@ with st.expander("Data Upload"):
             if uploaded_file.type == "text/csv" or file_extension == "csv":
                 df = pd.read_csv(uploaded_file)
             elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" or file_extension == "xlsx":
-                df = pd.read_excel(uploaded_file)
+                df = pd.read_excel(uploaded_file, engine="openpyxl")
             elif uploaded_file.type == "application/x-parquet" or file_extension == "parquet":
                 df = pd.read_parquet(uploaded_file)
             elif uploaded_file.type == "application/octet-stream" or file_extension == "feather":
@@ -772,5 +772,6 @@ with st.expander("Machine Learning Models", expanded=st.session_state.model_trai
         
     else:
             st.warning("⚠️ Please upload a dataset first to train models.")
+
 
 
